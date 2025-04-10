@@ -7,8 +7,5 @@ Development plans:
 1. Add registration.
 2. Add multiple-vote (long-vote option)
 3. Add the even-players ability (re-vote option).
-			^
-			| (why r u here, go away from my README -_-)
-
 4. Come up with a way to verify updates to the top (no idea how it gonna work).
 
