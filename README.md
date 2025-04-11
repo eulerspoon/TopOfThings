@@ -1,5 +1,5 @@
 # TopOfThings
-An attempt to determine the relation of order on the set of everything in the world.
+An attempt to define the relation of order on the set of everything in the world.
 Maxim Biroff's idea.
 
 Development plans (aka TODO list):
