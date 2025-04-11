@@ -14,5 +14,5 @@ Development plans (aka TODO list):
 ![er_top_of_things drawio](https://github.com/user-attachments/assets/a6877154-c031-4839-a40b-768f5e2d67dd)
 
 6. Add the even-players ability (re-vote option).
-7. Come up with a way to verify updates to the top (no idea how it gonna work).
-
+7. Pin voting messages.
+8. Come up with a way to verify updates to the top (no idea how it gonna work).
