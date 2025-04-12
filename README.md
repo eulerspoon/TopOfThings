@@ -7,7 +7,8 @@ Development plans (aka TODO list):
 1. Add registration.
 2. Add multiple-vote (long-vote option).
 3. Use embedded telegram voting.
-4. Scaling. 
+4. Add shuffle option (compare 2 random members of top).
+5. Scaling. 
     Add the ability to create multiple tops (one top per chat, exporting the top from another chat).
     Here is an ER diagram of a possible database:
    
