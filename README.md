@@ -4,7 +4,7 @@ Maxim Biroff's idea.
 
 Development plans (aka TODO list):
 
-1. Add registration.
+1. Add registration and keep stats on server.
 2. Add multiple-vote (long-vote option).
 3. Use embedded telegram voting.
 4. Add shuffle option (compare 2 random members of top).
