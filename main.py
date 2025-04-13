@@ -37,7 +37,7 @@ def add_thing(message):
     voting.on()
 
     # voting.new_thing = splited[1][0].upper() + splited[1][1:].lower()
-    voting.new_thing = splited[1]
+    voting.new_thing = ' '.join(splited[1:])
 
     voting.cur_index = (voting.left + voting.right) // 2
     voting.old_thing = top.things[voting.cur_index]
