@@ -25,7 +25,7 @@ def add_thing(message):
         )
         return
     
-    # splited = message.text.split()
+    splited = message.text.split()
     # if len(splited) != 2: TODO
     #     bot.send_message(
     #         message.chat.id,
