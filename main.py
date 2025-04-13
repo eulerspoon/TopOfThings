@@ -19,7 +19,8 @@ def add_thing(message):
     if voting.in_progress:
         bot.send_message(
             message.chat.id,
-            "Сначала нужно закончить предыдущее голосование.",
+            "Сначала нужно закончить предыдущее голосование." \
+            "Либо отменить с помощью /cancel.",
             reply_to_message_id=message.message_id
         )
         return
@@ -115,9 +116,7 @@ def vote_for_thing(message):
         voting.off()
         return
 
-    voting.cur_index = (voting.left + voting.right) // 2
-    voting.old_thing = top.things[voting.cur_index]
-    voting.next_step()
+    voting.next_step(top.things)
 
     bot.send_message(message.chat.id, voting.get_vote_ask())
     

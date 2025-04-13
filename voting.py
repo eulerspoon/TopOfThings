@@ -33,7 +33,9 @@ class Voting:
     def off(self):
         self.in_progress = False
 
-    def next_step(self):
+    def next_step(self, things):
+        self.cur_index = (self.left + self.right) // 2
+        self.old_thing = things[self.cur_index]
         self.votes = {}
 
     def get_vote_ask(self):
