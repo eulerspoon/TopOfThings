@@ -25,14 +25,14 @@ def add_thing(message):
         )
         return
     
-    splited = message.text.split()
-    if len(splited) != 2:
-        bot.send_message(
-            message.chat.id,
-            "Неверный формат команды add.",
-            reply_to_message_id=message.message_id
-        )
-        return
+    # splited = message.text.split()
+    # if len(splited) != 2: TODO
+    #     bot.send_message(
+    #         message.chat.id,
+    #         "Неверный формат команды add.",
+    #         reply_to_message_id=message.message_id
+    #     )
+    #     return
 
     voting.on()
 
