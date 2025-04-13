@@ -37,6 +37,7 @@ class Voting:
         self.cur_index = (self.left + self.right) // 2
         self.old_thing = things[self.cur_index]
         self.votes = {}
+        self.in_progress = True
 
     def get_vote_ask(self):
         result = '\nЧто лучше?\n\n'
