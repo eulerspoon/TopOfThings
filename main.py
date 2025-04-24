@@ -111,8 +111,8 @@ def vote_for_thing(message):
             message.chat.id,
             answer
         )
-        voting.off()
         voting.top_size = top.size
+        voting.off()
         return
 
     voting.next_step(top.things)
