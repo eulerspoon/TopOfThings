@@ -1,18 +1,20 @@
 class Top:
     def __init__(self, filename):
         self.filename = filename
-        self.file = open(filename)
+        self.size = 0
+        self.things = []
         self.read()
-        self.size = len(self.things)
 
     def add(self, thing, index):
         self.things.insert(index, thing)
-        open(self.filename, 'w').write('\n'.join(self.things))
-        self.size += 1
+        self.size = len(self.things)
+        self.write()
 
     def read(self):
-        self.things = self.file.read().strip().split('\n')
+        with open(self.filename, 'r', encoding='utf-8') as file:
+            self.things = [line.strip() for line in file if line.strip()]
+            self.size = len(self.things)
 
     def write(self):
-        for thing in self.things:
-            self.file.write(thing + '\n')
+        with open(self.filename, 'w', encoding='utf-8') as file:
+            file.write('\n'.join(self.things))

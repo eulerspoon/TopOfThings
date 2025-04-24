@@ -17,8 +17,9 @@ class Voting:
         return max((1, 2), key=list(self.votes.values()).count)
 
     def get_state(self):
-        result = self.new_thing + ' - ' + str(list(self.votes.values()).count(1)) + '\n'
-        result += self.old_thing + ' - ' + str(list(self.votes.values()).count(2))
+        values = list(self.votes.values())
+        result = self.new_thing + ' - ' + str(values.count(1)) + '\n'
+        result += self.old_thing + ' - ' + str(values.count(2))
         return result
 
     def on(self):
@@ -34,10 +35,13 @@ class Voting:
         self.in_progress = False
 
     def next_step(self, things):
-        self.cur_index = (self.left + self.right) // 2
-        self.old_thing = things[self.cur_index]
+        if self.left == len(things):
+            self.cur_index = len(things) - 1
+            self.old_thing = things[-1]
+        else:
+            self.cur_index = (self.left + self.right) // 2
+            self.old_thing = things[self.cur_index]
         self.votes = {}
-        self.in_progress = True
 
     def get_vote_ask(self):
         result = '\nЧто лучше?\n\n'

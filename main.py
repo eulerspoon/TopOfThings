@@ -24,26 +24,18 @@ def add_thing(message):
             reply_to_message_id=message.message_id
         )
         return
-    
+
     splited = message.text.split()
-    # if len(splited) != 2: TODO
-    #     bot.send_message(
-    #         message.chat.id,
-    #         "Неверный формат команды add.",
-    #         reply_to_message_id=message.message_id
-    #     )
-    #     return
 
     voting.on()
 
-    # voting.new_thing = splited[1][0].upper() + splited[1][1:].lower()
     voting.new_thing = ' '.join(splited[1:])
 
     voting.cur_index = (voting.left + voting.right) // 2
     voting.old_thing = top.things[voting.cur_index]
-    
+
     bot.send_message(message.chat.id, voting.get_vote_ask())
-    
+
 
 @bot.message_handler(commands=['vote'])
 def vote_for_thing(message):
@@ -54,7 +46,7 @@ def vote_for_thing(message):
             reply_to_message_id=message.message_id
         )
         return
-    
+
     splited = message.text.split()
     if len(splited) != 2 or len(splited[1]) != 1 or message.text[-1] not in ('1', '2'):
         bot.send_message(
@@ -72,7 +64,7 @@ def vote_for_thing(message):
             reply_to_message_id=message.message_id
         )
         return
-    
+
     chose = int(message.text[-1])
     voting.vote(user_id, chose)
 
@@ -85,7 +77,7 @@ def vote_for_thing(message):
         return
 
     if voting.result() == 1:
-        voting.right = voting.cur_index - 1
+        voting.right = voting.cur_index
     else:
         voting.left = voting.cur_index + 1
 
@@ -101,6 +93,7 @@ def vote_for_thing(message):
             start, end = top.size - 3, top.size
         else:
             start, end = voting.left - 1, voting.left + 2
+
 
         for i in range(start, end):
             answer += f'{i + 1}. {top.things[i]}'
@@ -120,7 +113,7 @@ def vote_for_thing(message):
     voting.next_step(top.things)
 
     bot.send_message(message.chat.id, voting.get_vote_ask())
-    
+
 
 @bot.message_handler(commands=['help'])
 def print_help(message):
