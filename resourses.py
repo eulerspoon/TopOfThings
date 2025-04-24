@@ -1,6 +1,8 @@
-FILEPATH = 'top_of_things.txt'
+token_file = open('TOKEN.txt')
+TOKEN = token_file.read()
+token_file.close()
 
-TOKEN = '7668160683:AAF3S3S41xBCJpl8vwhBT3KzPRdbZclU5eA'
+FILEPATH = 'top_of_things.txt'
 
 GREETING = "Привет, я умею добавлять новые вещи в топ вещей!"
 

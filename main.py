@@ -16,7 +16,7 @@ def greet(message):
 
 @bot.message_handler(commands=['add'])
 def add_thing(message):
-    if voting.in_progress:
+    if voting.is_on():
         bot.send_message(
             message.chat.id,
             "Сначала нужно закончить предыдущее голосование." \
@@ -29,17 +29,20 @@ def add_thing(message):
 
     voting.on()
 
-    voting.new_thing = ' '.join(splited[1:])
+    voting['new_thing'] = ' '.join(splited[1:])
 
-    voting.cur_index = (voting.left + voting.right) // 2
-    voting.old_thing = top.things[voting.cur_index]
+    voting['cur_index'] = (voting['left'] + voting['right']) // 2
+    voting['old_thing'] = top.things[voting['cur_index']]
+
+    voting.write()
 
     bot.send_message(message.chat.id, voting.get_vote_ask())
 
 
 @bot.message_handler(commands=['vote'])
 def vote_for_thing(message):
-    if not voting.in_progress:
+    voting.read()
+    if not voting.is_on():
         bot.send_message(
             message.chat.id,
             "Сейчас не идёт голосование.",
@@ -57,10 +60,10 @@ def vote_for_thing(message):
         return
 
     user_id = message.from_user.id
-    if user_id in voting.votes:
+    if str(user_id) in voting['votes']:
         bot.send_message(
             message.chat.id,
-            f"Ты уже проголосовал за {voting.votes[user_id]}.",
+            f"Ты уже проголосовал за {voting['votes'][str(user_id)]}.",
             reply_to_message_id=message.message_id
         )
         return
@@ -77,22 +80,23 @@ def vote_for_thing(message):
         return
 
     if voting.result() == 1:
-        voting.right = voting.cur_index
+        voting['right'] = voting['cur_index']
     else:
-        voting.left = voting.cur_index + 1
+        voting['left'] = voting['cur_index'] + 1
+    voting.write()
 
-    if voting.left >= voting.right:
-        top.add(voting.new_thing, voting.left)
-        answer = f'Вещь "{voting.new_thing}" добавлена на позицию {voting.left + 1}:\n\n'
-        if voting.left != 0:
+    if voting['left'] >= voting['right']:
+        top.add(voting['new_thing'], voting['left'])
+        answer = f"Вещь \"{voting['new_thing']}\" добавлена на позицию {voting['left'] + 1}:\n\n"
+        if voting['left'] != 0:
             answer += '...\n'
 
-        if voting.left == 0:
+        if voting['left'] == 0:
             start, end = 0, 3
-        elif voting.left == top.size - 1:
+        elif voting['left'] == top.size - 1:
             start, end = top.size - 3, top.size
         else:
-            start, end = voting.left - 1, voting.left + 2
+            start, end = voting['left'] - 1, voting['left'] + 2
 
 
         for i in range(start, end):
@@ -100,7 +104,7 @@ def vote_for_thing(message):
             if i != end - 1:
                 answer += '\n'
 
-        if voting.left != top.size - 1:
+        if voting['left'] != top.size - 1:
             answer += '\n...'
 
         bot.send_message(
@@ -161,7 +165,7 @@ def send_txt(message):
 
 @bot.message_handler(commands=['voting'])
 def send_voting_info(message):
-    if voting.in_progress:
+    if voting.is_on():
         result = voting.get_vote_ask() + '\n\n'
         result += voting.get_state()
     else:
@@ -175,7 +179,7 @@ def send_voting_info(message):
 
 @bot.message_handler(commands=['cancel'])
 def send_voting_info(message):
-    if voting.in_progress:
+    if voting.is_on():
         voting.off()
         result = "Голосование прекращено."
     else:
@@ -186,4 +190,4 @@ def send_voting_info(message):
         reply_to_message_id=message.message_id
     )
 
-bot.polling()
+bot.infinity_polling()
