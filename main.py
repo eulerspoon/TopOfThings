@@ -112,6 +112,7 @@ def vote_for_thing(message):
             answer
         )
         voting.off()
+        voting.top_size = top.size
         return
 
     voting.next_step(top.things)
