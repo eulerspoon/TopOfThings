@@ -84,3 +84,4 @@ class Voting:
     def is_on(self):
         self.read()
         return self.voting['is_active']
+

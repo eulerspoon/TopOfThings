@@ -72,11 +72,6 @@ def vote_for_thing(message):
     voting.vote(user_id, chose)
 
     if not voting.is_over():
-        bot.send_message(
-            message.chat.id,
-            voting.get_state(),
-            reply_to_message_id=message.message_id
-        )
         return
 
     if voting.result() == 1:
@@ -192,3 +187,4 @@ def send_voting_info(message):
     )
 
 bot.infinity_polling()
+
