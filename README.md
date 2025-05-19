@@ -11,3 +11,4 @@ Maxim Biroff's idea.
 6.  /battle command (2 things from global top).
 7. Verifying things before adding to global top.
 8. Even-voters ability.
+9. Edit voters number in chat.
