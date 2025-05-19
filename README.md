@@ -12,3 +12,4 @@ Maxim Biroff's idea.
 7. Verifying things before adding to global top.
 8. Even-voters ability.
 9. Edit voters number in chat.
+10. Global top single-page.
