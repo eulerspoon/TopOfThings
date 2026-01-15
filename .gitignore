@@ -1,9 +1,3 @@
-__pycache__/
-
-*.bash
-
-TOKEN.txt
-
 .gitignore
-
 old/
+__pycache__/
