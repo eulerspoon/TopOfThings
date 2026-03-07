@@ -4,10 +4,6 @@ import json
 from resources import BOT_TOKEN, API_BASE_URL
 from urllib.parse import urljoin
 
-# Конфигурация
-# TOKEN = os.getenv('BOT_TOKEN', 'YOUR_BOT_TOKEN')
-# API_BASE_URL = os.getenv('API_BASE_URL', 'http://localhost:8000/api/')  # URL вашего Django сервиса
-
 bot = telebot.TeleBot(BOT_TOKEN)
 
 # Вспомогательная функция для вызова API
