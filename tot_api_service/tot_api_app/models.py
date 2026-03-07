@@ -22,6 +22,8 @@ class Top(models.Model):
     right = models.IntegerField(null=True, blank=True)
     cur_index = models.IntegerField(null=True, blank=True)
     new_thing = models.TextField(null=True, blank=True)
+    new_thing_id = models.IntegerField(null=True, blank=True)
+    new_thing_created = models.BooleanField(default=False)
     votes = models.TextField(null=True, blank=True) # json as text
     
     class Meta:

@@ -1,3 +1,4 @@
 .gitignore
 old/
 __pycache__/
+tot_bot/resources.py
