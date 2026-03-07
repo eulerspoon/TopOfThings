@@ -688,7 +688,7 @@ def home_page(request):
     """
     Главная страница с глобальным топом
     """
-    things = Thing.objects.filter(verified=1).order_by('-rating')[:50]
+    things = Thing.objects.filter(verified=1).order_by('-rating')
     
     context = {
         'things': things
