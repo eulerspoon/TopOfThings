@@ -4,3 +4,5 @@ __pycache__/
 tot_bot/resources.py
 fill_local_top.py
 things.txt
+venv/
+backup/

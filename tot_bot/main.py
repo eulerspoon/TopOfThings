@@ -1,7 +1,7 @@
 import telebot
 import requests
 import json
-from resources import BOT_TOKEN, API_BASE_URL
+from resources import BOT_TOKEN, API_BASE_URL, BOT_AUTH_TOKEN
 from urllib.parse import urljoin
 
 bot = telebot.TeleBot(BOT_TOKEN)
@@ -9,11 +9,12 @@ bot = telebot.TeleBot(BOT_TOKEN)
 # Вспомогательная функция для вызова API
 def api_request(method, endpoint, data=None, params=None):
     url = urljoin(API_BASE_URL, endpoint.lstrip('/'))
+    headers = {'Authorization': f'Token {BOT_AUTH_TOKEN}'}
     try:
         if method == 'GET':
-            response = requests.get(url, params=params, timeout=10)
+            response = requests.get(url, params=params, headers=headers, timeout=10)
         elif method == 'POST':
-            response = requests.post(url, json=data, timeout=10)
+            response = requests.post(url, json=data, headers=headers, timeout=10)
         else:
             return None, 'Unsupported method'
         
@@ -93,7 +94,7 @@ def add_thing(message):
             opponent = result.get('opponent', 'неизвестно')
             bot.send_message(
                 chat_id,
-                f"\nЧто лучше?\n1. {new_thing_title}\n2. {opponent}\n\nГолосуйте: /vote1 или /vote2"
+                f"\nЧто лучше?\n\n1. {new_thing_title}\n2. {opponent}\n\nГолосуйте: /vote1 или /vote2"
             )
     else:
         bot.send_message(chat_id, f"Не удалось начать голосование: {result.get('error', 'неизвестная ошибка')}")
@@ -116,7 +117,10 @@ def vote(message):
     }
     result, error = api_request('POST', 'vote/', data=data)
     if error:
-        bot.send_message(chat_id, f"Ошибка: {error}")
+        if error.endswith('already voted"}'):
+            bot.send_message(chat_id, f"Нельзя проголосовать во второй раз. Можно отозвать голос с помощью /unvote.")
+        else:
+            bot.send_message(chat_id, f"Ошибка: {error}")
         return
 
     if not result.get('success'):
@@ -135,7 +139,7 @@ def vote(message):
         new_opponent = result.get('new_opponent', 'неизвестно')
         bot.send_message(
             chat_id,
-            f"\nЧто лучше?\n1. {result.get('new_thing', '')}\n2. {new_opponent}\n\nГолосуйте: /vote1 или /vote2"
+            f"\nЧто лучше?\n\n1. {result.get('new_thing', '')}\n2. {new_opponent}\n\nГолосуйте: /vote1 или /vote2"
         )
     else:
         # Голос принят, но батл ещё не завершён
@@ -159,7 +163,13 @@ def cancel_voting(message):
     data = {'chat_id': chat_id}
     result, error = api_request('POST', 'cancel_voting/', data=data)
     if error:
-        bot.send_message(chat_id, f"Ошибка: {error}")
+        print(error)
+        if error.endswith('cancel"}'):
+            bot.send_message(chat_id, 'Голосования нет, отменять нечего.')
+        elif error.endswith('not found"}'):
+            bot.send_message(chat_id, 'Для начала создайте топ командой /start.')
+        else:
+            bot.send_message(chat_id, f"Ошибка: {error}")
         return
 
     if result.get('success'):

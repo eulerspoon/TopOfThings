@@ -1,6 +1,7 @@
-from django.db.models import F
+from django.shortcuts import render
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from django.db import transaction
 from math import pow, floor
@@ -20,8 +21,12 @@ def calculate_elo(thing_a, thing_b, result):
     """
     if result == 'win_a':
         s_a, s_b = 1.0, 0.0
-    else:  # 'win_b'
+    elif result == 'win_b':
         s_a, s_b = 0.0, 1.0
+    elif result == 'draw':
+        s_a, s_b = 0.5, 0.5
+    else:
+        return None, None, None, None, None
 
     e_a = 1 / (1 + pow(10, (thing_b.rating - thing_a.rating) / 400))
     e_b = 1 - e_a
@@ -45,6 +50,7 @@ def calculate_elo(thing_a, thing_b, result):
     return new_rating_a, new_rating_b, delta_a, delta_b, k_a, k_b
 
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def get_global_top(request):
     """
     Возвращает глобальный топ вещей
@@ -57,6 +63,7 @@ def get_global_top(request):
     })
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_local_top(request, chat_id):
     """
     Возвращает один локальный топ по его chat_id
@@ -106,6 +113,7 @@ def get_local_top(request, chat_id):
 
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_tops(request):
     """
     Все локальные топы
@@ -118,6 +126,7 @@ def get_tops(request):
     })
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_things(request):
     """
     Возвращает список всех вещей
@@ -131,6 +140,7 @@ def get_things(request):
     })
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_categories(request):
     """
     Возвращает список всех категорий
@@ -144,6 +154,7 @@ def get_categories(request):
     })
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def add_new_thing(request):
     """
     Добавляет новую вещь в таблицу things
@@ -185,6 +196,7 @@ def add_new_thing(request):
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def create_top(request):
     """
     Создаёт новый пустой топ с указанным chat_id.
@@ -217,6 +229,7 @@ def create_top(request):
     })
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def add_new_category(request):
     """
     Добавляет новую категорию
@@ -253,6 +266,7 @@ def add_new_category(request):
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def add_thing_to_top(request):
     """
     Добавляет вещь в топ на указанную позицию
@@ -311,6 +325,7 @@ def add_thing_to_top(request):
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def handle_battle(request):
     serializer = BattleRequestSerializer(data=request.data)
     if not serializer.is_valid():
@@ -376,6 +391,7 @@ def handle_battle(request):
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def start_voting(request):
     chat_id = request.data.get('chat_id')
     new_thing_title = request.data.get('new_thing_title')
@@ -452,6 +468,7 @@ def start_voting(request):
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def vote(request):
     chat_id = request.data.get('chat_id')
     user_id = str(request.data.get('user_id'))
@@ -516,7 +533,7 @@ def vote(request):
             'opponent': opponent_title
         })
 
-    # --- Батл завершён, обновляем рейтинги ---
+    # Батл завершён, обновляем рейтинги
     new_thing = Thing.objects.get(thing_id=top.new_thing_id)
     opponent = opponent_thing.thing
 
@@ -533,7 +550,6 @@ def vote(request):
         locked_opp.battles_number += 1
         locked_new.save()
         locked_opp.save()
-    # -----------------------------------------
 
     # Обновляем границы и очищаем голоса
     if winner == 1:
@@ -592,6 +608,7 @@ def vote(request):
     })
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def cancel_voting(request):
     chat_id = request.data.get('chat_id')
 
@@ -636,6 +653,7 @@ def cancel_voting(request):
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def cancel_vote(request):
     """
     Удаляет голос конкретного пользователя.
@@ -682,13 +700,11 @@ def cancel_vote(request):
         'votes': votes
     })
 
-from django.shortcuts import render
-
 def home_page(request):
     """
     Главная страница с глобальным топом
     """
-    things = Thing.objects.filter(verified=1).order_by('-rating')
+    things = Thing.objects.filter(verified=1).order_by('-rating')[:100]
     
     context = {
         'things': things
