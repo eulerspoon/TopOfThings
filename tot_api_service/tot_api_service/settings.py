@@ -25,8 +25,17 @@ SECRET_KEY = 'django-insecure-a19wt$8wo^2g-_@r+-s2$(6sp3e$yoram7*ss*60-!9iwcm&td
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['topofthings.ru', 'www.topofthings.ru', 'top-of-things.ru', 'www.top-of-things.ru', 'localhost', '127.0.0.1']
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://top-of-things.ru',
+    'https://www.top-of-things.ru',
+    'https://topofthings.ru',
+    'https://www.topofthings.ru',
+]
+
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Application definition
 
